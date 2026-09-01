@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "DevTab — Personal Developer Dashboard",
+  "description": "A fast, minimal, dark developer dashboard for your new tab: GitHub activity, currencies, calendar, focus timer and more.",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://api.coingecko.com/*",
+    "https://api.frankfurter.dev/*",
+    "https://api.open-meteo.com/*",
+    "https://geocoding-api.open-meteo.com/*"
+  ],
+  "minimum_chrome_version": "102"
+}
