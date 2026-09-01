@@ -31,17 +31,6 @@ export function GeneralSection({ settings, update }: Props) {
         />
       </Field>
 
-      <Field label="Search engine">
-        <SegmentedControl
-          value={settings.searchEngine}
-          onChange={(searchEngine) => update({ searchEngine })}
-          options={[
-            { value: "google", label: "Google" },
-            { value: "bing", label: "Bing" },
-            { value: "duckduckgo", label: "DuckDuckGo" },
-          ]}
-        />
-      </Field>
     </div>
   );
 }

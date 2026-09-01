@@ -10,8 +10,6 @@ export const WIDGET_REGISTRY: WidgetMeta[] = [
   { id: "calendar", label: "Calendar", description: "Monthly calendar", defaultEnabled: true },
   { id: "weather", label: "Weather", description: "Local conditions", defaultEnabled: true },
   { id: "quickLinks", label: "Quick Links", description: "Shortcuts to your tools", defaultEnabled: true },
-  { id: "projects", label: "Projects", description: "Track progress on personal projects", defaultEnabled: true },
-  { id: "focus", label: "Focus Timer", description: "Pomodoro-style timer", defaultEnabled: true },
   { id: "serverStatus", label: "Server Status", description: "Uptime of your services", defaultEnabled: false },
 ];
 
@@ -60,10 +58,11 @@ export const CURRENCY_SYMBOLS = {
   base: "USD",
 };
 
+export const DEFAULT_BACKGROUND_IMAGE = "/backgrounds/default.jpg";
+
 export const DEFAULT_SETTINGS: UserSettings = {
   userName: "Developer",
   theme: "dark",
-  searchEngine: "google",
 
   githubUsername: "",
   githubToken: "",
@@ -74,11 +73,10 @@ export const DEFAULT_SETTINGS: UserSettings = {
   weatherCity: "",
   weatherUseGeolocation: true,
 
-  focusMinutes: 25,
-  breakMinutes: 5,
-
   widgetOrder: DEFAULT_WIDGET_ORDER,
   widgetEnabled: DEFAULT_WIDGET_ENABLED,
+
+  backgroundImage: DEFAULT_BACKGROUND_IMAGE,
 
   quickLinks: [
     { id: "l1", title: "GitHub", url: "https://github.com" },
@@ -90,12 +88,6 @@ export const DEFAULT_SETTINGS: UserSettings = {
     { id: "l7", title: "MongoDB", url: "https://cloud.mongodb.com" },
   ],
 
-  projects: [
-    { id: "p1", name: "Telody", progress: 82 },
-    { id: "p2", name: "Admin Panel", progress: 61 },
-    { id: "p3", name: "Landing", progress: 91 },
-  ],
-
   serverStatusItems: [
     { id: "s1", label: "API", state: "online" },
     { id: "s2", label: "MongoDB", state: "online" },
@@ -103,8 +95,3 @@ export const DEFAULT_SETTINGS: UserSettings = {
   ],
 };
 
-export const SEARCH_ENGINE_URLS: Record<UserSettings["searchEngine"], string> = {
-  google: "https://www.google.com/search?q=",
-  bing: "https://www.bing.com/search?q=",
-  duckduckgo: "https://duckduckgo.com/?q=",
-};

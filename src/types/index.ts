@@ -6,8 +6,6 @@ export type WidgetId =
   | "calendar"
   | "weather"
   | "quickLinks"
-  | "projects"
-  | "focus"
   | "serverStatus";
 
 export interface WidgetMeta {
@@ -27,18 +25,11 @@ export type AsyncState<T> =
 // ---------- Settings ----------
 
 export type ThemeMode = "dark" | "light" | "system";
-export type SearchEngine = "google" | "bing" | "duckduckgo";
 
 export interface QuickLink {
   id: string;
   title: string;
   url: string;
-}
-
-export interface Project {
-  id: string;
-  name: string;
-  progress: number; // 0-100
 }
 
 export interface ServerStatusItem {
@@ -50,7 +41,8 @@ export interface ServerStatusItem {
 export interface UserSettings {
   userName: string;
   theme: ThemeMode;
-  searchEngine: SearchEngine;
+
+  backgroundImage: string;
 
   githubUsername: string;
   githubToken: string;
@@ -61,14 +53,10 @@ export interface UserSettings {
   weatherCity: string;
   weatherUseGeolocation: boolean;
 
-  focusMinutes: number;
-  breakMinutes: number;
-
   widgetOrder: WidgetId[];
   widgetEnabled: Record<WidgetId, boolean>;
 
   quickLinks: QuickLink[];
-  projects: Project[];
   serverStatusItems: ServerStatusItem[];
 }
 
