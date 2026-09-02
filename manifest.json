@@ -21,7 +21,9 @@
     "https://api.frankfurter.dev/*",
     "https://api.open-meteo.com/*",
     "https://geocoding-api.open-meteo.com/*",
-    "https://api.tetherland.com/*"
+    "https://api.tetherland.com/*",
+    "http://*/*",
+    "https://*/*"
   ],
   "minimum_chrome_version": "102"
 }

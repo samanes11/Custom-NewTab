@@ -35,7 +35,7 @@ export const API_CONFIG = {
   currency: {
     fiat: "https://api.frankfurter.dev/v1",
     crypto: "https://api.coingecko.com/api/v3/simple/price",
-    tetherland: "https://api.tetherland.com/currencies", // ← اضافه شد
+    tetherland: "https://api.tetherland.com/currencies",
   },
   weather: {
     // Open-Meteo: free, no key, both forecast and geocoding.
@@ -49,6 +49,7 @@ export const REFRESH_INTERVALS = {
   github: 10 * 60 * 1000,
   currency: 2 * 60 * 1000,
   weather: 15 * 60 * 1000,
+  serverStatus: 60 * 1000,
 };
 
 export const CURRENCY_SYMBOLS = {
@@ -87,10 +88,6 @@ export const DEFAULT_SETTINGS: UserSettings = {
     { id: "l7", title: "MongoDB", url: "https://cloud.mongodb.com" },
   ],
 
-  serverStatusItems: [
-    { id: "s1", label: "API", state: "online" },
-    { id: "s2", label: "MongoDB", state: "online" },
-    { id: "s3", label: "Telegram", state: "online" },
-  ],
+  serverStatusItems: [],
 };
 

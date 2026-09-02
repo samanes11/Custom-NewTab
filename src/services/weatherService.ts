@@ -74,6 +74,7 @@ export async function fetchWeatherByCoords(lat: number, lon: number, locationNam
   return {
     temperatureC: Math.round(json.current.temperature_2m),
     condition: labelFor(json.current.weather_code),
+    code: json.current.weather_code,
     humidity: Math.round(json.current.relative_humidity_2m),
     windKph: Math.round(json.current.wind_speed_10m),
     locationName,

@@ -31,7 +31,7 @@ export default function App() {
       case "weather":
         return <WeatherWidget city={settings.weatherCity} useGeolocation={settings.weatherUseGeolocation} />;
       case "quickLinks":
-        return <QuickLinksWidget links={settings.quickLinks} />;
+        return <QuickLinksWidget links={settings.quickLinks} onChange={(quickLinks) => update({ quickLinks })} />;
       case "serverStatus":
         return <ServerStatusWidget items={settings.serverStatusItems} />;
       case "calendar":

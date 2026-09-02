@@ -32,10 +32,18 @@ export interface QuickLink {
   url: string;
 }
 
+export type ServerStatusState = "online" | "offline" | "degraded";
+
 export interface ServerStatusItem {
   id: string;
   label: string;
-  state: "online" | "offline" | "degraded";
+  url: string;
+  /** Optional dot-path into a JSON response, e.g. "mongodb.status" */
+  jsonPath?: string;
+  /** Substring that means healthy, e.g. "connected" */
+  healthyValue: string;
+  /** Substring that means unhealthy, e.g. "disconnected" */
+  unhealthyValue: string;
 }
 
 export interface UserSettings {
@@ -97,6 +105,7 @@ export interface CurrencyQuote {
 export interface WeatherData {
   temperatureC: number;
   condition: string;
+  code: number;
   humidity: number;
   windKph: number;
   locationName: string;
