@@ -22,6 +22,18 @@ export function formatTime(date: Date): string {
   });
 }
 
+export function formatClockTime(date: Date): string {
+  return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+export function formatClock12(date: Date): { time: string; period: string } {
+  let hours = date.getHours();
+  const period = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return { time: `${hours}:${minutes}`, period };
+}
+
 export function formatPrice(value: number): string {
   if (value >= 1000) {
     return value.toLocaleString(undefined, { maximumFractionDigits: 0 });

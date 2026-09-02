@@ -7,8 +7,8 @@ import type { UserSettings, WidgetId, WidgetMeta } from "@/types";
 export const WIDGET_REGISTRY: WidgetMeta[] = [
   { id: "github", label: "GitHub", description: "Contribution graph & activity", defaultEnabled: true },
   { id: "currency", label: "Currency", description: "Live exchange & crypto rates", defaultEnabled: true },
-  { id: "calendar", label: "Calendar", description: "Monthly calendar", defaultEnabled: true },
   { id: "weather", label: "Weather", description: "Local conditions", defaultEnabled: true },
+  { id: "calendar", label: "Calendar", description: "Monthly calendar", defaultEnabled: true },
   { id: "quickLinks", label: "Quick Links", description: "Shortcuts to your tools", defaultEnabled: true },
   { id: "serverStatus", label: "Server Status", description: "Uptime of your services", defaultEnabled: false },
 ];
@@ -58,7 +58,7 @@ export const CURRENCY_SYMBOLS = {
   base: "USD",
 };
 
-export const DEFAULT_BACKGROUND_IMAGE = "/backgrounds/default.jpg";
+export const DEFAULT_BACKGROUND_IMAGE = "/default.jpg";
 
 export const DEFAULT_SETTINGS: UserSettings = {
   userName: "Developer",

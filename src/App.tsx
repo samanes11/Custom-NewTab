@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Header } from "@/components/layout/Header";
-import { CalendarClockHero } from "@/components/layout/CalendarClockHero";
 import { SettingsDrawer } from "@/components/layout/SettingsDrawer";
+import { CalendarWidget } from "@/components/widgets/CalendarWidget";
 import { WidgetErrorBoundary } from "@/components/common/WidgetErrorBoundary";
 import { GithubWidget } from "@/components/widgets/GithubWidget";
 import { CurrencyWidget } from "@/components/widgets/CurrencyWidget";
@@ -11,6 +11,7 @@ import { ServerStatusWidget } from "@/components/widgets/ServerStatusWidget";
 import { useSettings } from "@/hooks/useSettings";
 import { WIDGET_REGISTRY } from "@/config";
 import type { WidgetId } from "@/types";
+import { ClockHero } from "@/components/layout/ClockHero";
 
 export default function App() {
   const { settings, update, loaded } = useSettings();
@@ -33,6 +34,8 @@ export default function App() {
         return <QuickLinksWidget links={settings.quickLinks} />;
       case "serverStatus":
         return <ServerStatusWidget items={settings.serverStatusItems} />;
+      case "calendar":
+        return <CalendarWidget />;
       default:
         return null;
     }
@@ -49,8 +52,8 @@ export default function App() {
       <div className="fixed inset-0 -z-10 bg-black/45" />
 
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-8 sm:px-10 lg:px-16">
-        <Header userName={settings.userName} onOpenSettings={() => setSettingsOpen(true)} />
-        <CalendarClockHero />
+        <Header onOpenSettings={() => setSettingsOpen(true)} />
+        <ClockHero userName={settings.userName} />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {enabledOrderedWidgets.map((id) => {

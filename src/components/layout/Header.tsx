@@ -1,21 +1,12 @@
 import { Settings } from "lucide-react";
-import { formatFullDate, formatGreeting } from "@/utils/format";
 
 interface HeaderProps {
-  userName: string;
   onOpenSettings: () => void;
 }
 
-export function Header({ userName, onOpenSettings }: HeaderProps) {
-  const now = new Date();
+export function Header({ onOpenSettings }: HeaderProps) {
   return (
-    <header className="flex flex-wrap items-start justify-between gap-4 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-semibold text-ink">
-          {formatGreeting(now)}{userName ? `, ${userName}` : ""}
-        </h1>
-        <p className="mt-1 text-sm text-ink-dim">{formatFullDate(now)}</p>
-      </div>
+    <header className="flex items-center justify-end animate-fade-in">
       <button
         onClick={onOpenSettings}
         aria-label="Open settings"
