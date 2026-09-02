@@ -100,4 +100,8 @@ export interface WeatherData {
   humidity: number;
   windKph: number;
   locationName: string;
+  feelsLikeC: number;
+  tempMaxC: number;
+  tempMinC: number;
+  forecast: { day: string; code: number; maxC: number; minC: number }[];
 }

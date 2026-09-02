@@ -45,7 +45,7 @@ export async function geocodeCity(city: string): Promise<{ lat: number; lon: num
 }
 
 export async function fetchWeatherByCoords(lat: number, lon: number, locationName: string): Promise<WeatherData> {
-  const url = `${API_CONFIG.weather.forecast}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`;
+  const url = `${API_CONFIG.weather.forecast}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=4`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Weather API error (${res.status})`);
   const json: {
@@ -54,8 +54,22 @@ export async function fetchWeatherByCoords(lat: number, lon: number, locationNam
       relative_humidity_2m: number;
       wind_speed_10m: number;
       weather_code: number;
+      apparent_temperature: number;
+    };
+    daily: {
+      time: string[];
+      weather_code: number[];
+      temperature_2m_max: number[];
+      temperature_2m_min: number[];
     };
   } = await res.json();
+
+  const forecast = json.daily.time.slice(1, 4).map((date, i) => ({
+    day: new Date(date).toLocaleDateString(undefined, { weekday: "short" }),
+    code: json.daily.weather_code[i + 1],
+    maxC: Math.round(json.daily.temperature_2m_max[i + 1]),
+    minC: Math.round(json.daily.temperature_2m_min[i + 1]),
+  }));
 
   return {
     temperatureC: Math.round(json.current.temperature_2m),
@@ -63,6 +77,10 @@ export async function fetchWeatherByCoords(lat: number, lon: number, locationNam
     humidity: Math.round(json.current.relative_humidity_2m),
     windKph: Math.round(json.current.wind_speed_10m),
     locationName,
+    feelsLikeC: Math.round(json.current.apparent_temperature),
+    tempMaxC: Math.round(json.daily.temperature_2m_max[0]),
+    tempMinC: Math.round(json.daily.temperature_2m_min[0]),
+    forecast,
   };
 }
 

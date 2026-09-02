@@ -11,13 +11,17 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": ["storage", "unlimitedStorage"],
+  "permissions": [
+    "storage",
+    "unlimitedStorage"
+  ],
   "host_permissions": [
     "https://api.github.com/*",
     "https://api.coingecko.com/*",
     "https://api.frankfurter.dev/*",
     "https://api.open-meteo.com/*",
-    "https://geocoding-api.open-meteo.com/*"
+    "https://geocoding-api.open-meteo.com/*",
+    "https://api.tetherland.com/*"
   ],
   "minimum_chrome_version": "102"
 }

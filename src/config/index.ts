@@ -33,10 +33,9 @@ export const API_CONFIG = {
     graphql: "https://api.github.com/graphql",
   },
   currency: {
-    // Frankfurter: free, no key, ECB-sourced fiat rates.
     fiat: "https://api.frankfurter.dev/v1",
-    // CoinGecko: free, no key, simple price endpoint for crypto.
     crypto: "https://api.coingecko.com/api/v3/simple/price",
+    tetherland: "https://api.tetherland.com/currencies", // ← اضافه شد
   },
   weather: {
     // Open-Meteo: free, no key, both forecast and geocoding.

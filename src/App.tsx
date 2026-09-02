@@ -51,7 +51,7 @@ export default function App() {
       />
       <div className="fixed inset-0 -z-10 bg-black/45" />
 
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-8 sm:px-10 lg:px-16">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:px-10 lg:px-16">
         <Header onOpenSettings={() => setSettingsOpen(true)} />
         <ClockHero userName={settings.userName} />
 
