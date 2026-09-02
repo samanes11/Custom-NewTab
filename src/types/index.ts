@@ -96,13 +96,8 @@ export interface CurrencyQuote {
 
 export interface WeatherData {
   temperatureC: number;
-  feelsLikeC: number;      
   condition: string;
   humidity: number;
   windKph: number;
   locationName: string;
-  tempMaxC: number;        
-  tempMinC: number;        
-  sunrise: string;         
-  sunset: string;         
 }
