@@ -4,14 +4,17 @@ import { useAsyncResource } from "@/hooks/useAsyncResource";
 import { fetchWeather } from "@/services/weatherService";
 import { iconForWeatherCode } from "@/utils/weatherIcons";
 import { REFRESH_INTERVALS } from "@/config";
-import type { WeatherData } from "@/types";
+import { WeatherSection } from "@/components/layout/settings/WeatherSection";
+import type { UserSettings, WeatherData } from "@/types";
 
 interface Props {
-  city: string;
-  useGeolocation: boolean;
+  settings: UserSettings;
+  update: (patch: Partial<UserSettings>) => void;
 }
 
-export function WeatherWidget({ city, useGeolocation }: Props) {
+export function WeatherWidget({ settings, update }: Props) {
+  const { weatherCity: city, weatherUseGeolocation: useGeolocation } = settings;
+
   const { state } = useAsyncResource<WeatherData>(
     `weather:${city}:${useGeolocation}`,
     () => fetchWeather(city, useGeolocation),
@@ -20,7 +23,8 @@ export function WeatherWidget({ city, useGeolocation }: Props) {
   );
 
   return (
-    <WidgetFrame icon={CloudSun} title="Weather">
+    <WidgetFrame icon={CloudSun} title="Weather" settings={<WeatherSection settings={settings} update={update} />}>
+
       <StateView state={state} emptyLabel="Set a city or allow location access in Settings" skeletonLines={3}>
         {(weather, stale) => {
           const Icon = iconForWeatherCode(weather.code);

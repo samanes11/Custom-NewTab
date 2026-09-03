@@ -3,25 +3,19 @@ import { WidgetFrame, StateView } from "@/components/common/WidgetFrame";
 import { useAsyncResource } from "@/hooks/useAsyncResource";
 import { checkAllServerStatuses } from "@/services/serverStatusService";
 import { REFRESH_INTERVALS } from "@/config";
-import type { ServerStatusItem, ServerStatusState } from "@/types";
+import { ServerStatusSection } from "@/components/layout/settings/ServerStatusSection";
+import type { ServerStatusState, UserSettings } from "@/types";
 
 interface Props {
-  items: ServerStatusItem[];
+  settings: UserSettings;
+  update: (patch: Partial<UserSettings>) => void;
 }
 
-const STATE_STYLES: Record<ServerStatusState, string> = {
-  online: "bg-good",
-  degraded: "bg-amber",
-  offline: "bg-bad",
-};
+const STATE_STYLES: Record<ServerStatusState, string> = { online: "bg-good", degraded: "bg-amber", offline: "bg-bad" };
+const STATE_LABELS: Record<ServerStatusState, string> = { online: "Online", degraded: "Unknown", offline: "Offline" };
 
-const STATE_LABELS: Record<ServerStatusState, string> = {
-  online: "Online",
-  degraded: "Unknown",
-  offline: "Offline",
-};
-
-export function ServerStatusWidget({ items }: Props) {
+export function ServerStatusWidget({ settings, update }: Props) {
+  const items = settings.serverStatusItems;
   const itemsKey = JSON.stringify(items);
 
   const { state, refetch } = useAsyncResource<Record<string, ServerStatusState>>(
@@ -35,6 +29,7 @@ export function ServerStatusWidget({ items }: Props) {
     <WidgetFrame
       icon={Activity}
       title="Server Status"
+      settings={<ServerStatusSection settings={settings} update={update} />}
       action={
         items.length > 0 && (
           <button onClick={refetch} aria-label="Refresh" className="text-ink-faint transition-colors hover:text-ink">
