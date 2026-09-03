@@ -20,7 +20,7 @@ function toComparableString(value: unknown): string {
 }
 
 
-async function read(res: Response): Promise<unknown> {
+async function readBody(res: Response): Promise<unknown> {
     const text = await res.text();
     try {
         return JSON.parse(text);
