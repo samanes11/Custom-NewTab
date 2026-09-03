@@ -19,8 +19,6 @@ function toComparableString(value: unknown): string {
     }
 }
 
-//erdgv
-//socjofws
 
 async function readBody(res: Response): Promise<unknown> {
     const text = await res.text();
