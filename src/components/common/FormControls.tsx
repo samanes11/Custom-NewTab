@@ -12,10 +12,11 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 
 export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   const { className = "", ...rest } = props;
+  const hasWidthOverride = /(^|\s)w-/.test(className);
   return (
     <input
       {...rest}
-      className={`w-full rounded-lg border border-surface-border bg-base/60 px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent/50 focus:outline-none ${className}`}
+      className={`${hasWidthOverride ? "" : "w-full"} rounded-lg border border-surface-border bg-base/60 px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent/50 focus:outline-none ${className}`}
     />
   );
 }
@@ -57,9 +58,8 @@ export function SegmentedControl<T extends string>({
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`rounded-md px-3 py-1.5 text-[13px] transition-colors ${
-            value === opt.value ? "bg-accent text-white" : "text-ink-dim hover:text-ink"
-          }`}
+          className={`rounded-md px-3 py-1.5 text-[13px] transition-colors ${value === opt.value ? "bg-accent text-white" : "text-ink-dim hover:text-ink"
+            }`}
         >
           {opt.label}
         </button>
