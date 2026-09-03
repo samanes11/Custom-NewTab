@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { AlertCircle, Inbox } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { AlertCircle, Inbox, Settings as SettingsIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { AsyncState } from "@/types";
 import { SkeletonLines } from "./Skeleton";
@@ -8,20 +8,47 @@ interface WidgetFrameProps {
   icon: LucideIcon;
   title: string;
   action?: ReactNode;
+  /** اگه پر بشه، آیکون چرخ‌دنده توی هدر ظاهر می‌شه و با کلیک این محتوا رو توی یه پاپ‌آور نشون می‌ده. */
+  settings?: ReactNode;
   children: ReactNode;
   className?: string;
 }
 
-export function WidgetFrame({ icon: Icon, title, action, children, className = "" }: WidgetFrameProps) {
+export function WidgetFrame({ icon: Icon, title, action, settings, children, className = "" }: WidgetFrameProps) {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   return (
-    <section className={`widget-card animate-fade-in ${className}`}>
+    <section className={`widget-card animate-fade-in relative ${className}`}>
       <header className="mb-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-ink-dim">
           <Icon className="h-4 w-4" strokeWidth={2} />
           <h2 className="text-[13px] font-medium tracking-normal text-ink-dim">{title}</h2>
         </div>
-        {action}
+        <div className="flex items-center gap-2">
+          {action}
+          {settings && (
+            <button
+              type="button"
+              onClick={() => setSettingsOpen((v) => !v)}
+              aria-label={`${title} settings`}
+              className={`transition-colors hover:text-ink ${settingsOpen ? "text-accent" : "text-ink-faint"}`}
+            >
+              <SettingsIcon className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
       </header>
+
+      {settingsOpen && settings && (
+        <>
+          {/* کلیک بیرون از پاپ‌آور، می‌بندتش */}
+          <div className="fixed inset-0 z-10" onClick={() => setSettingsOpen(false)} />
+          <div className="absolute right-3 top-11 z-20 w-80 animate-scale-in rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl">
+            {settings}
+          </div>
+        </>
+      )}
+
       {children}
     </section>
   );
@@ -34,8 +61,6 @@ interface StateViewProps<T> {
   children: (data: T, stale?: boolean) => ReactNode;
 }
 
-/** Renders the right thing for each AsyncState, so widgets only ever
- * write the "success" render path themselves. */
 export function StateView<T>({ state, emptyLabel = "Nothing to show yet", skeletonLines = 3, children }: StateViewProps<T>) {
   if (state.status === "loading") {
     return <SkeletonLines count={skeletonLines} />;
