@@ -3,22 +3,19 @@ import { WidgetFrame, StateView } from "@/components/common/WidgetFrame";
 import { useAsyncResource } from "@/hooks/useAsyncResource";
 import { fetchGithubProfile } from "@/services/githubService";
 import { REFRESH_INTERVALS } from "@/config";
-import type { GithubProfile } from "@/types";
+import { GithubSection } from "@/components/layout/settings/GithubSection";
+import type { GithubProfile, UserSettings } from "@/types";
 
 interface Props {
-  username: string;
-  token: string;
+  settings: UserSettings;
+  update: (patch: Partial<UserSettings>) => void;
 }
 
-const LEVEL_COLORS = [
-  "bg-surface-hover",
-  "bg-accent-dim",
-  "bg-accent/60",
-  "bg-accent",
-  "bg-amber",
-];
+const LEVEL_COLORS = ["bg-surface-hover", "bg-accent-dim", "bg-accent/60", "bg-accent", "bg-amber"];
 
-export function GithubWidget({ username, token }: Props) {
+export function GithubWidget({ settings, update }: Props) {
+  const { githubUsername: username, githubToken: token } = settings;
+
   const { state } = useAsyncResource<GithubProfile>(
     `github:${username}:${token ? "auth" : "public"}`,
     () => fetchGithubProfile(username, token),
@@ -30,7 +27,7 @@ export function GithubWidget({ username, token }: Props) {
     <WidgetFrame
       icon={Github}
       title="GitHub"
-      className="sm:col-span-2"
+      settings={<GithubSection settings={settings} update={update} />}
       action={
         username && (
           <a
@@ -45,15 +42,12 @@ export function GithubWidget({ username, token }: Props) {
         )
       }
     >
+      {/* بدنه‌ی StateView دقیقاً همون چیزیه که الان داری — عوض نمی‌شه */}
       <StateView state={state} emptyLabel="Add your GitHub username in Settings" skeletonLines={4}>
         {(profile, stale) => (
           <div className={stale ? "opacity-70" : ""}>
             <div className="mb-4 flex items-center gap-3">
-              <img
-                src={profile.avatarUrl}
-                alt=""
-                className="h-10 w-10 rounded-full border border-surface-border"
-              />
+              <img src={profile.avatarUrl} alt="" className="h-10 w-10 rounded-full border border-surface-border" />
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-ink">{profile.username}</p>
                 <p className="text-xs text-ink-faint">

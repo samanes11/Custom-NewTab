@@ -4,14 +4,17 @@ import { useAsyncResource } from "@/hooks/useAsyncResource";
 import { fetchCurrencyQuotes } from "@/services/currencyService";
 import { REFRESH_INTERVALS } from "@/config";
 import { formatPrice, formatRelativeTime } from "@/utils/format";
-import type { CurrencyQuote } from "@/types";
+import { CurrencySection } from "@/components/layout/settings/CurrencySection";
+import type { CurrencyQuote, UserSettings } from "@/types";
 
 interface Props {
-  base: string;
-  targets: string[];
+  settings: UserSettings;
+  update: (patch: Partial<UserSettings>) => void;
 }
 
-export function CurrencyWidget({ base, targets }: Props) {
+export function CurrencyWidget({ settings, update }: Props) {
+  const { currencyBase: base, currencyTargets: targets } = settings;
+
   const { state } = useAsyncResource<CurrencyQuote[]>(
     `currency:${base}:${targets.join(",")}`,
     () => fetchCurrencyQuotes(base, targets),
@@ -20,7 +23,8 @@ export function CurrencyWidget({ base, targets }: Props) {
   );
 
   return (
-    <WidgetFrame icon={DollarSign} title="Currency">
+    <WidgetFrame icon={DollarSign} title="Currency" settings={<CurrencySection settings={settings} update={update} />}>
+      {/* بدنه‌ی StateView عیناً همون قبلیه، عوض نمی‌شه */}
       <StateView state={state} emptyLabel="No currencies configured" skeletonLines={4}>
         {(quotes, stale) => (
           <ul className={`flex flex-col divide-y divide-surface-border ${stale ? "opacity-70" : ""}`}>
@@ -35,9 +39,8 @@ export function CurrencyWidget({ base, targets }: Props) {
                   </span>
                   {q.changePercent != null && (
                     <span
-                      className={`flex items-center gap-0.5 text-xs tabular ${
-                        q.changePercent >= 0 ? "text-good" : "text-bad"
-                      }`}
+                      className={`flex items-center gap-0.5 text-xs tabular ${q.changePercent >= 0 ? "text-good" : "text-bad"
+                        }`}
                     >
                       {q.changePercent >= 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
                       {Math.abs(q.changePercent).toFixed(1)}%
@@ -47,9 +50,7 @@ export function CurrencyWidget({ base, targets }: Props) {
               </li>
             ))}
             {quotes[0] && (
-              <li className="pt-2 text-right text-[11px] text-ink-faint">
-                Updated {formatRelativeTime(quotes[0].updatedAt)}
-              </li>
+              <li className="pt-2 text-right text-[11px] text-ink-faint">Updated {formatRelativeTime(quotes[0].updatedAt)}</li>
             )}
           </ul>
         )}
