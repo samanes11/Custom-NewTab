@@ -9,9 +9,20 @@ import { WeatherWidget } from "@/components/widgets/WeatherWidget";
 import { QuickLinksWidget } from "@/components/widgets/QuickLinksWidget";
 import { ServerStatusWidget } from "@/components/widgets/ServerStatusWidget";
 import { useSettings } from "@/hooks/useSettings";
+import { useDragReorder } from "@/hooks/useDragReorder";
 import { WIDGET_REGISTRY } from "@/config";
 import type { WidgetId } from "@/types";
 import { ClockHero } from "@/components/layout/ClockHero";
+
+/**
+ * ترتیب جدیدِ ویجت‌های فعال رو (که با درگ به دست اومده) دوباره داخل
+ * لیست کامل widgetOrder می‌ذاره، بدون اینکه جای ویجت‌های غیرفعال رو به‌هم بزنه.
+ */
+function mergeWidgetOrder(fullOrder: WidgetId[], enabledNewOrder: WidgetId[]): WidgetId[] {
+  const enabledSet = new Set(enabledNewOrder);
+  let i = 0;
+  return fullOrder.map((id) => (enabledSet.has(id) ? enabledNewOrder[i++] : id));
+}
 
 export default function App() {
   const { settings, update, loaded } = useSettings();
@@ -22,18 +33,22 @@ export default function App() {
     [settings.widgetOrder, settings.widgetEnabled],
   );
 
+  const { getItemProps } = useDragReorder(enabledOrderedWidgets, (next) =>
+    update({ widgetOrder: mergeWidgetOrder(settings.widgetOrder, next) }),
+  );
+
   function renderWidget(id: WidgetId) {
     switch (id) {
       case "github":
-        return <GithubWidget username={settings.githubUsername} token={settings.githubToken} />;
+        return <GithubWidget settings={settings} update={update} />;
       case "currency":
-        return <CurrencyWidget base={settings.currencyBase} targets={settings.currencyTargets} />;
+        return <CurrencyWidget settings={settings} update={update} />;
       case "weather":
-        return <WeatherWidget city={settings.weatherCity} useGeolocation={settings.weatherUseGeolocation} />;
+        return <WeatherWidget settings={settings} update={update} />;
       case "quickLinks":
         return <QuickLinksWidget links={settings.quickLinks} onChange={(quickLinks) => update({ quickLinks })} />;
       case "serverStatus":
-        return <ServerStatusWidget items={settings.serverStatusItems} />;
+        return <ServerStatusWidget settings={settings} update={update} />;
       case "calendar":
         return <CalendarWidget />;
       default:
@@ -56,12 +71,18 @@ export default function App() {
         <ClockHero userName={settings.userName} />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {enabledOrderedWidgets.map((id) => {
+          {enabledOrderedWidgets.map((id, index) => {
             const meta = WIDGET_REGISTRY.find((w) => w.id === id);
+            const { isDragging, isOver, ...dragProps } = getItemProps(index);
             return (
-              <WidgetErrorBoundary key={id} label={meta?.label ?? "Widget"}>
-                {renderWidget(id)}
-              </WidgetErrorBoundary>
+              <div
+                key={id}
+                {...dragProps}
+                className={`cursor-grab transition-opacity active:cursor-grabbing ${meta?.gridClassName ?? ""} ${isDragging ? "opacity-40" : ""
+                  } ${isOver ? "rounded-card ring-2 ring-accent/60" : ""}`}
+              >
+                <WidgetErrorBoundary label={meta?.label ?? "Widget"}>{renderWidget(id)}</WidgetErrorBoundary>
+              </div>
             );
           })}
         </div>

@@ -5,7 +5,7 @@ import type { UserSettings, WidgetId, WidgetMeta } from "@/types";
  * Adding a new widget starts here.
  */
 export const WIDGET_REGISTRY: WidgetMeta[] = [
-  { id: "github", label: "GitHub", description: "Contribution graph & activity", defaultEnabled: true },
+  { id: "github", label: "GitHub", description: "Contribution graph & activity", defaultEnabled: true, gridClassName: "sm:col-span-2" },
   { id: "currency", label: "Currency", description: "Live exchange & crypto rates", defaultEnabled: true },
   { id: "calendar", label: "Calendar", description: "Monthly calendar", defaultEnabled: true },
   { id: "weather", label: "Weather", description: "Local conditions", defaultEnabled: true },

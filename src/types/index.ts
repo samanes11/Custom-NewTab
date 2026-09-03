@@ -12,8 +12,8 @@ export interface WidgetMeta {
   id: WidgetId;
   label: string;
   description: string;
-  /** Server status is opt-in by default since it needs real endpoints to be useful. */
   defaultEnabled: boolean;
+  gridClassName?: string;
 }
 
 export type AsyncState<T> =
