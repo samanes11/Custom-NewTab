@@ -1,9 +1,5 @@
 import { useState } from "react";
 
-/**
- * Minimal drag-to-reorder built on native HTML5 DnD events, so we don't
- * pull in a whole drag-and-drop library for one reorderable list.
- */
 export function useDragReorder<T>(items: T[], onReorder: (next: T[]) => void) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -11,14 +7,22 @@ export function useDragReorder<T>(items: T[], onReorder: (next: T[]) => void) {
   function getItemProps(index: number) {
     return {
       draggable: true,
-      onDragStart: () => setDraggedIndex(index),
+      onDragStart: (e: React.DragEvent) => {
+        e.stopPropagation();
+        setDraggedIndex(index);
+      },
       onDragEnter: (e: React.DragEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         if (index !== draggedIndex) setOverIndex(index);
       },
-      onDragOver: (e: React.DragEvent) => e.preventDefault(),
+      onDragOver: (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+      },
       onDrop: (e: React.DragEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         if (draggedIndex === null || draggedIndex === index) return;
         const next = [...items];
         const [moved] = next.splice(draggedIndex, 1);
@@ -27,7 +31,8 @@ export function useDragReorder<T>(items: T[], onReorder: (next: T[]) => void) {
         setDraggedIndex(null);
         setOverIndex(null);
       },
-      onDragEnd: () => {
+      onDragEnd: (e: React.DragEvent) => {
+        e.stopPropagation();
         setDraggedIndex(null);
         setOverIndex(null);
       },
