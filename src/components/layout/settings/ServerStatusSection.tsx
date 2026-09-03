@@ -62,25 +62,12 @@ export function ServerStatusSection({ settings, update }: Props) {
 
             <ul className="flex flex-col gap-3">
                 {settings.serverStatusItems.map((item) => (
-                    <li
-                        key={item.id}
-                        className="flex flex-col gap-2 rounded-lg border border-surface-border p-3"
-                    >
+                    <li key={item.id} className="flex flex-col gap-2 rounded-lg border border-surface-border p-3">
                         <div className="flex items-center gap-2">
                             <TextInput
                                 value={item.label}
-                                onChange={(e) =>
-                                    editItem(item.id, { label: e.target.value })
-                                }
+                                onChange={(e) => editItem(item.id, { label: e.target.value })}
                                 placeholder="Label (e.g. MongoDB)"
-                                className="w-32 shrink-0"
-                            />
-                            <TextInput
-                                value={item.url}
-                                onChange={(e) =>
-                                    editItem(item.id, { url: e.target.value })
-                                }
-                                placeholder="https://api.example.com/health"
                             />
                             <button
                                 onClick={() => removeItem(item.id)}
@@ -91,33 +78,28 @@ export function ServerStatusSection({ settings, update }: Props) {
                             </button>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <TextInput
-                                value={item.jsonPath ?? ""}
-                                onChange={(e) =>
-                                    editItem(item.id, { jsonPath: e.target.value })
-                                }
-                                placeholder="JSON path (optional), e.g. mongodb.status"
-                            />
+                        <TextInput
+                            value={item.url}
+                            onChange={(e) => editItem(item.id, { url: e.target.value })}
+                            placeholder="https://api.example.com/health"
+                        />
+
+                        <TextInput
+                            value={item.jsonPath ?? ""}
+                            onChange={(e) => editItem(item.id, { jsonPath: e.target.value })}
+                            placeholder="JSON path (optional), e.g. mongodb.status"
+                        />
+
+                        <div className="grid grid-cols-2 gap-2">
                             <TextInput
                                 value={item.healthyValue}
-                                onChange={(e) =>
-                                    editItem(item.id, {
-                                        healthyValue: e.target.value,
-                                    })
-                                }
-                                placeholder="Healthy value, e.g. connected"
-                                className="w-40 shrink-0"
+                                onChange={(e) => editItem(item.id, { healthyValue: e.target.value })}
+                                placeholder="Healthy value"
                             />
                             <TextInput
                                 value={item.unhealthyValue}
-                                onChange={(e) =>
-                                    editItem(item.id, {
-                                        unhealthyValue: e.target.value,
-                                    })
-                                }
-                                placeholder="Unhealthy value, e.g. disconnected"
-                                className="w-40 shrink-0"
+                                onChange={(e) => editItem(item.id, { unhealthyValue: e.target.value })}
+                                placeholder="Unhealthy value"
                             />
                         </div>
                     </li>
@@ -125,62 +107,39 @@ export function ServerStatusSection({ settings, update }: Props) {
             </ul>
 
             <div className="flex flex-col gap-2 border-t border-surface-border pt-3">
-                <div className="flex items-center gap-2">
-                    <TextInput
-                        value={draft.label}
-                        onChange={(e) =>
-                            setDraft({ ...draft, label: e.target.value })
-                        }
-                        placeholder="Label"
-                        className="w-32 shrink-0"
-                    />
-                    <TextInput
-                        value={draft.url}
-                        onChange={(e) =>
-                            setDraft({ ...draft, url: e.target.value })
-                        }
-                        placeholder="https://api.example.com/health"
-                    />
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <TextInput
-                        value={draft.jsonPath}
-                        onChange={(e) =>
-                            setDraft({ ...draft, jsonPath: e.target.value })
-                        }
-                        placeholder="JSON path (optional)"
-                    />
+                <TextInput
+                    value={draft.label}
+                    onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+                    placeholder="Label"
+                />
+                <TextInput
+                    value={draft.url}
+                    onChange={(e) => setDraft({ ...draft, url: e.target.value })}
+                    placeholder="https://api.example.com/health"
+                />
+                <TextInput
+                    value={draft.jsonPath}
+                    onChange={(e) => setDraft({ ...draft, jsonPath: e.target.value })}
+                    placeholder="JSON path (optional)"
+                />
+                <div className="grid grid-cols-2 gap-2">
                     <TextInput
                         value={draft.healthyValue}
-                        onChange={(e) =>
-                            setDraft({
-                                ...draft,
-                                healthyValue: e.target.value,
-                            })
-                        }
+                        onChange={(e) => setDraft({ ...draft, healthyValue: e.target.value })}
                         placeholder="Healthy value"
-                        className="w-40 shrink-0"
                     />
                     <TextInput
                         value={draft.unhealthyValue}
-                        onChange={(e) =>
-                            setDraft({
-                                ...draft,
-                                unhealthyValue: e.target.value,
-                            })
-                        }
+                        onChange={(e) => setDraft({ ...draft, unhealthyValue: e.target.value })}
                         placeholder="Unhealthy value"
-                        className="w-40 shrink-0"
                     />
-                    <button
-                        onClick={addItem}
-                        aria-label="Add service"
-                        className="shrink-0 rounded-lg bg-accent p-2 text-white transition-colors hover:bg-accent/90"
-                    >
-                        <Plus className="h-3.5 w-3.5" />
-                    </button>
                 </div>
+                <button
+                    onClick={addItem}
+                    className="flex items-center justify-center gap-1.5 rounded-lg bg-accent py-2 text-sm font-medium text-white hover:bg-accent/90"
+                >
+                    <Plus className="h-3.5 w-3.5" /> افزودن سرویس
+                </button>
             </div>
         </div>
     );

@@ -8,7 +8,6 @@ interface WidgetFrameProps {
   icon: LucideIcon;
   title: string;
   action?: ReactNode;
-  /** اگه پر بشه، آیکون چرخ‌دنده توی هدر ظاهر می‌شه و با کلیک این محتوا رو توی یه پاپ‌آور نشون می‌ده. */
   settings?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -43,7 +42,7 @@ export function WidgetFrame({ icon: Icon, title, action, settings, children, cla
         <>
           {/* کلیک بیرون از پاپ‌آور، می‌بندتش */}
           <div className="fixed inset-0 z-10" onClick={() => setSettingsOpen(false)} />
-          <div className="absolute right-3 top-11 z-20 w-80 animate-scale-in rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl">
+          <div className="absolute right-0 top-11 z-20 max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto animate-scale-in rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl">
             {settings}
           </div>
         </>
