@@ -3,6 +3,8 @@ import { AlertCircle, Inbox, Settings as SettingsIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { AsyncState } from "@/types";
 import { SkeletonLines } from "./Skeleton";
+import { AnimatePresence, motion } from "motion/react";
+
 
 interface WidgetFrameProps {
   icon: LucideIcon;
@@ -30,7 +32,7 @@ export function WidgetFrame({ icon: Icon, title, action, settings, children, cla
               type="button"
               onClick={() => setSettingsOpen((v) => !v)}
               aria-label={`${title} settings`}
-              className={`transition-colors hover:text-ink ${settingsOpen ? "text-accent" : "text-ink-faint"}`}
+              className={`tap transition-colors hover:text-ink ${settingsOpen ? "text-accent" : "text-ink-faint"}`}
             >
               <SettingsIcon className="h-3.5 w-3.5" />
             </button>
@@ -38,15 +40,22 @@ export function WidgetFrame({ icon: Icon, title, action, settings, children, cla
         </div>
       </header>
 
-      {settingsOpen && settings && (
-        <>
-          {/* کلیک بیرون از پاپ‌آور، می‌بندتش */}
-          <div className="fixed inset-0 z-10" onClick={() => setSettingsOpen(false)} />
-          <div className="absolute right-0 top-11 z-20 max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto animate-scale-in rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl">
-            {settings}
-          </div>
-        </>
-      )}
+      <AnimatePresence>
+        {settingsOpen && settings && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setSettingsOpen(false)} />
+            <motion.div
+              className="absolute right-0 top-11 z-20 max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto origin-top-right rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
+              transition={{ type: "spring", bounce: 0, duration: 0.28 }}
+            >
+              {settings}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {children}
     </section>

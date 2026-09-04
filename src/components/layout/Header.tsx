@@ -10,7 +10,7 @@ export function Header({ onOpenSettings }: HeaderProps) {
       <button
         onClick={onOpenSettings}
         aria-label="Open settings"
-        className="rounded-full border border-surface-border bg-surface/60 p-2.5 text-ink-dim transition-colors hover:border-accent/40 hover:text-ink"
+        className="tap rounded-full border border-surface-border bg-surface/60 p-2.5 text-ink-dim transition-colors hover:border-accent/40 hover:text-ink"
       >
         <Settings className="h-4 w-4" />
       </button>

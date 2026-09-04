@@ -28,14 +28,14 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center justify-between gap-3 py-1 text-left"
+      className="tap flex w-full items-center justify-between gap-3 py-1 text-left"
     >
       <span className="text-sm text-ink">{label}</span>
       <span
         className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${checked ? "bg-accent" : "bg-surface-border"}`}
       >
         <span
-          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${checked ? "translate-x-4" : "translate-x-0.5"}`}
+          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-spring-bounce ${checked ? "translate-x-4" : "translate-x-0.5"}`}
         />
       </span>
     </button>
@@ -58,7 +58,7 @@ export function SegmentedControl<T extends string>({
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`rounded-md px-3 py-1.5 text-[13px] transition-colors ${value === opt.value ? "bg-accent text-white" : "text-ink-dim hover:text-ink"
+          className={`tap rounded-md px-3 py-1.5 text-[13px] transition-colors ${value === opt.value ? "bg-accent text-white" : "text-ink-dim hover:text-ink"
             }`}
         >
           {opt.label}
