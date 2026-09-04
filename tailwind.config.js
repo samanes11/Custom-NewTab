@@ -4,6 +4,14 @@ export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      letterSpacing: {
+        display: "-0.02em",
+        label: "0.01em",
+      },
+      transitionTimingFunction: {
+        spring: "cubic-bezier(0.16, 1, 0.3, 1)",
+        "spring-bounce": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      },
       colors: {
         base: {
           DEFAULT: "#0B0E14",
@@ -55,10 +63,15 @@ export default {
           "0%": { opacity: "0", transform: "scale(0.97)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        "slide-in-right": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
         "scale-in": "scale-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "slide-in-right": "slide-in-right 0.32s cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },

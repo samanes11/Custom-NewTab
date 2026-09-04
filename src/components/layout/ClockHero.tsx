@@ -10,9 +10,9 @@ export function ClockHero({ userName }: ClockHeroProps) {
     const { time, period } = formatClock12(now);
 
     return (
-        <section className="mx-auto flex flex-col items-center gap-1 py-2 text-center animate-fade-in">
+        <section className="mx-auto flex flex-col items-center gap-1 pb-2 text-center animate-fade-in">
             <div className="flex flex-row items-end">
-                <span className="tabular text-6xl font-semibold leading-none text-ink">{time}</span>
+                <span className="tabular text-[clamp(3.25rem,7vw,4.5rem)] font-semibold leading-none tracking-display text-ink">{time}</span>
                 <span className="mt-1 text-xl font-medium tracking-wide text-ink-dim">{period}</span>
             </div>
             <p className="mt-3 text-lg font-medium text-ink">

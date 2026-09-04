@@ -13,11 +13,9 @@ import { useDragReorder } from "@/hooks/useDragReorder";
 import { WIDGET_REGISTRY } from "@/config";
 import type { WidgetId } from "@/types";
 import { ClockHero } from "@/components/layout/ClockHero";
+import { MotionConfig } from "motion/react";
 
-/**
- * ترتیب جدیدِ ویجت‌های فعال رو (که با درگ به دست اومده) دوباره داخل
- * لیست کامل widgetOrder می‌ذاره، بدون اینکه جای ویجت‌های غیرفعال رو به‌هم بزنه.
- */
+
 function mergeWidgetOrder(fullOrder: WidgetId[], enabledNewOrder: WidgetId[]): WidgetId[] {
   const enabledSet = new Set(enabledNewOrder);
   let i = 0;
@@ -59,36 +57,38 @@ export default function App() {
   if (!loaded) return <div className="min-h-screen bg-base" />;
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden">
-      <div
-        className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${settings.backgroundImage})` }}
-      />
-      <div className="fixed inset-0 -z-10 bg-black/45" />
+    <MotionConfig reducedMotion="user">
+      <div className="relative min-h-screen w-full overflow-x-hidden">
+        <div
+          className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${settings.backgroundImage})` }}
+        />
+        <div className="fixed inset-0 -z-10 bg-black/45" />
 
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:px-10 lg:px-16">
-        <Header onOpenSettings={() => setSettingsOpen(true)} />
-        <ClockHero userName={settings.userName} />
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 pb-4 pt-3 sm:px-10 lg:px-16">
+          <Header onOpenSettings={() => setSettingsOpen(true)} />
+          <ClockHero userName={settings.userName} />
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {enabledOrderedWidgets.map((id, index) => {
-            const meta = WIDGET_REGISTRY.find((w) => w.id === id);
-            const { isDragging, isOver, ...dragProps } = getItemProps(index);
-            return (
-              <div
-                key={id}
-                {...dragProps}
-                className={`cursor-grab transition-opacity active:cursor-grabbing ${meta?.gridClassName ?? ""} ${isDragging ? "opacity-40" : ""
-                  } ${isOver ? "rounded-card ring-2 ring-accent/60" : ""}`}
-              >
-                <WidgetErrorBoundary label={meta?.label ?? "Widget"}>{renderWidget(id)}</WidgetErrorBoundary>
-              </div>
-            );
-          })}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {enabledOrderedWidgets.map((id, index) => {
+              const meta = WIDGET_REGISTRY.find((w) => w.id === id);
+              const { isDragging, isOver, ...dragProps } = getItemProps(index);
+              return (
+                <div
+                  key={id}
+                  {...dragProps}
+                  className={`cursor-grab transition-all duration-150 ease-spring-bounce active:cursor-grabbing ${meta?.gridClassName ?? ""} ${isDragging ? "scale-[0.97] opacity-40" : ""
+                    } ${isOver ? "scale-[1.01] rounded-card ring-2 ring-accent/60" : ""}`}
+                >
+                  <WidgetErrorBoundary label={meta?.label ?? "Widget"}>{renderWidget(id)}</WidgetErrorBoundary>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} settings={settings} update={update} />
-    </div>
+        <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} settings={settings} update={update} />
+      </div>
+    </MotionConfig>
   );
 }
