@@ -87,9 +87,8 @@ export function QuickLinksWidget({ links, onChange }: Props) {
                 rel="noreferrer"
                 title={hostFor(link.url)}
                 {...dragProps}
-                className={`group relative flex flex-col items-center gap-1.5 rounded-lg px-1 py-2.5 text-center transition-colors hover:bg-surface-hover ${
-                  isOver ? "bg-accent-soft" : ""
-                } ${isDragging ? "opacity-40" : ""}`}
+                className={`group relative flex flex-col items-center gap-1.5 rounded-lg px-1 py-2.5 text-center transition-all duration-150 ease-spring-bounce hover:bg-surface-hover ${isOver ? "scale-105 bg-accent-soft" : ""
+                  } ${isDragging ? "scale-95 opacity-40" : ""}`}
               >
                 <button
                   onClick={(e) => {

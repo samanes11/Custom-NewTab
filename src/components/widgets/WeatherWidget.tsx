@@ -34,7 +34,7 @@ export function WeatherWidget({ settings, update }: Props) {
                 <div className="flex items-center gap-3">
                   <Icon className="h-9 w-9 text-accent" strokeWidth={1.5} />
                   <div>
-                    <span className="tabular text-4xl font-semibold leading-none text-ink">
+                    <span className="tabular text-4xl font-semibold leading-none tracking-display text-ink">
                       {weather.temperatureC}°
                     </span>
                     <p className="mt-1 text-xs text-ink-faint">{weather.condition}</p>
@@ -68,7 +68,7 @@ export function WeatherWidget({ settings, update }: Props) {
                     const DayIcon = iconForWeatherCode(d.code);
                     return (
                       <div key={i} className="flex flex-col items-center gap-1 py-1 text-center">
-                        <span className="text-[11px] text-ink-faint">{d.day}</span>
+                        <span className="text-[11px] tracking-label text-ink-faint">{d.day}</span>
                         <DayIcon className="h-4 w-4 text-ink-dim" strokeWidth={1.5} />
                         <span className="tabular text-xs font-medium text-ink">
                           {d.maxC}° <span className="text-ink-faint">/ {d.minC}°</span>
