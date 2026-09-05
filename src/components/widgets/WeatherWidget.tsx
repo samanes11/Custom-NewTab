@@ -67,7 +67,7 @@ export function WeatherWidget({ settings, update }: Props) {
                   {weather.forecast.map((d, i) => {
                     const DayIcon = iconForWeatherCode(d.code);
                     return (
-                      <div key={i} className="flex flex-col items-center gap-1 py-1 text-center">
+                      <div key={i} className="flex flex-col items-center gap-1 py-1 text-center n">
                         <span className="text-[11px] tracking-label text-ink-faint">{d.day}</span>
                         <DayIcon className="h-4 w-4 text-ink-dim" strokeWidth={1.5} />
                         <span className="tabular text-xs font-medium text-ink">
