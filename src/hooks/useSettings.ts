@@ -13,6 +13,7 @@ function mergeWithDefaults(saved: Partial<UserSettings> | undefined): UserSettin
     ...DEFAULT_SETTINGS,
     ...saved,
     widgetEnabled: { ...DEFAULT_SETTINGS.widgetEnabled, ...saved.widgetEnabled },
+    widgetLayout: { ...DEFAULT_SETTINGS.widgetLayout, ...saved.widgetLayout },
     widgetOrder: saved.widgetOrder?.length ? saved.widgetOrder : DEFAULT_SETTINGS.widgetOrder,
   };
 }

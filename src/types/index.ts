@@ -8,12 +8,21 @@ export type WidgetId =
   | "quickLinks"
   | "serverStatus";
 
+export interface WidgetLayout {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 export interface WidgetMeta {
   id: WidgetId;
   label: string;
   description: string;
   defaultEnabled: boolean;
-  gridClassName?: string;
+  defaultLayout: WidgetLayout;
+  minW: number;
+  minH: number;
 }
 
 export type AsyncState<T> =
@@ -38,11 +47,8 @@ export interface ServerStatusItem {
   id: string;
   label: string;
   url: string;
-  /** Optional dot-path into a JSON response, e.g. "mongodb.status" */
   jsonPath?: string;
-  /** Substring that means healthy, e.g. "connected" */
   healthyValue: string;
-  /** Substring that means unhealthy, e.g. "disconnected" */
   unhealthyValue: string;
 }
 
@@ -63,6 +69,7 @@ export interface UserSettings {
 
   widgetOrder: WidgetId[];
   widgetEnabled: Record<WidgetId, boolean>;
+  widgetLayout: Record<WidgetId, WidgetLayout>;
 
   quickLinks: QuickLink[];
   serverStatusItems: ServerStatusItem[];
@@ -71,7 +78,7 @@ export interface UserSettings {
 // ---------- GitHub ----------
 
 export interface GithubContributionDay {
-  date: string; // YYYY-MM-DD
+  date: string;
   count: number;
   level: 0 | 1 | 2 | 3 | 4;
 }
@@ -86,7 +93,7 @@ export interface GithubProfile {
   weeks: GithubContributionDay[][] | null;
   publicRepos: number;
   followers: number;
-  hasFullData: boolean; // true when token-backed GraphQL data was used
+  hasFullData: boolean;
 }
 
 // ---------- Currency ----------
@@ -96,7 +103,7 @@ export interface CurrencyQuote {
   label: string;
   price: number;
   changePercent: number | null;
-  unit: string; // display currency, e.g. "USD"
+  unit: string;
   updatedAt: number;
 }
 

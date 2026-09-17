@@ -90,7 +90,7 @@
   }
 
   .widget-card {
-    @apply glass-panel rounded-card shadow-card p-4 flex flex-col;
+    @apply glass-panel rounded-card shadow-card p-4 flex h-full w-full flex-col;
   }
 
   .tabular {

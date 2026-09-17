@@ -1,10 +1,10 @@
-import { useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { AlertCircle, Inbox, Settings as SettingsIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { AsyncState } from "@/types";
 import { SkeletonLines } from "./Skeleton";
 import { AnimatePresence, motion } from "motion/react";
-
+import { useElementSize } from "@/hooks/useElementSize";
 
 interface WidgetFrameProps {
   icon: LucideIcon;
@@ -15,50 +15,62 @@ interface WidgetFrameProps {
   className?: string;
 }
 
+const WidgetSizeContext = createContext({ width: 0, height: 0 });
+
+/** Widgets call this to know how much room they actually have and switch
+ * to a compact layout when the user has resized them small. */
+export function useWidgetSize() {
+  return useContext(WidgetSizeContext);
+}
+
 export function WidgetFrame({ icon: Icon, title, action, settings, children, className = "" }: WidgetFrameProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const { ref, width, height } = useElementSize<HTMLElement>();
+  const compact = height < 120;
 
   return (
-    <section className={`widget-card animate-fade-in relative ${className}`}>
-      <header className="mb-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-ink-dim">
-          <Icon className="h-4 w-4" strokeWidth={2} />
-          <h2 className="text-[13px] font-medium tracking-normal text-ink-dim">{title}</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          {action}
-          {settings && (
-            <button
-              type="button"
-              onClick={() => setSettingsOpen((v) => !v)}
-              aria-label={`${title} settings`}
-              className={`tap transition-colors hover:text-ink ${settingsOpen ? "text-accent" : "text-ink-faint"}`}
-            >
-              <SettingsIcon className="h-3.5 w-3.5" />
-            </button>
+    <WidgetSizeContext.Provider value={{ width, height }}>
+      <section ref={ref} className={`widget-card animate-fade-in relative ${className}`}>
+        <header className={`flex items-center justify-between gap-2 ${compact ? "mb-1.5" : "mb-3"}`}>
+          <div className="flex items-center gap-2 text-ink-dim">
+            <Icon className="h-4 w-4" strokeWidth={2} />
+            {!compact && <h2 className="text-[13px] font-medium tracking-normal text-ink-dim">{title}</h2>}
+          </div>
+          <div className="flex items-center gap-2">
+            {action}
+            {settings && (
+              <button
+                type="button"
+                onClick={() => setSettingsOpen((v) => !v)}
+                aria-label={`${title} settings`}
+                className={`tap transition-colors hover:text-ink ${settingsOpen ? "text-accent" : "text-ink-faint"}`}
+              >
+                <SettingsIcon className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        </header>
+
+        <AnimatePresence>
+          {settingsOpen && settings && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setSettingsOpen(false)} />
+              <motion.div
+                className="absolute right-0 top-11 z-20 max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto origin-top-right rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl"
+                initial={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
+                transition={{ type: "spring", bounce: 0, duration: 0.28 }}
+              >
+                {settings}
+              </motion.div>
+            </>
           )}
-        </div>
-      </header>
+        </AnimatePresence>
 
-      <AnimatePresence>
-        {settingsOpen && settings && (
-          <>
-            <div className="fixed inset-0 z-10" onClick={() => setSettingsOpen(false)} />
-            <motion.div
-              className="absolute right-0 top-11 z-20 max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto origin-top-right rounded-lg border border-surface-border bg-base-raised p-4 shadow-2xl"
-              initial={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.28 }}
-            >
-              {settings}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {children}
-    </section>
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">{children}</div>
+      </section>
+    </WidgetSizeContext.Provider>
   );
 }
 

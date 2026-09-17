@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { SettingsDrawer } from "@/components/layout/SettingsDrawer";
 import { CalendarWidget } from "@/components/widgets/CalendarWidget";
@@ -9,31 +9,26 @@ import { WeatherWidget } from "@/components/widgets/WeatherWidget";
 import { QuickLinksWidget } from "@/components/widgets/QuickLinksWidget";
 import { ServerStatusWidget } from "@/components/widgets/ServerStatusWidget";
 import { useSettings } from "@/hooks/useSettings";
-import { useDragReorder } from "@/hooks/useDragReorder";
 import { WIDGET_REGISTRY } from "@/config";
-import type { WidgetId } from "@/types";
+import type { WidgetId, WidgetLayout } from "@/types";
 import { ClockHero } from "@/components/layout/ClockHero";
+import { FreeWidget } from "@/components/layout/FreeWidget";
 import { MotionConfig } from "motion/react";
-
-
-function mergeWidgetOrder(fullOrder: WidgetId[], enabledNewOrder: WidgetId[]): WidgetId[] {
-  const enabledSet = new Set(enabledNewOrder);
-  let i = 0;
-  return fullOrder.map((id) => (enabledSet.has(id) ? enabledNewOrder[i++] : id));
-}
 
 export default function App() {
   const { settings, update, loaded } = useSettings();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const enabledOrderedWidgets = useMemo(
-    () => settings.widgetOrder.filter((id) => settings.widgetEnabled[id]),
-    [settings.widgetOrder, settings.widgetEnabled],
-  );
+  const enabledWidgets = settings.widgetOrder.filter((id) => settings.widgetEnabled[id]);
 
-  const { getItemProps } = useDragReorder(enabledOrderedWidgets, (next) =>
-    update({ widgetOrder: mergeWidgetOrder(settings.widgetOrder, next) }),
-  );
+  function updateLayout(id: WidgetId, layout: WidgetLayout) {
+    update({ widgetLayout: { ...settings.widgetLayout, [id]: layout } });
+  }
+
+  function bringToFront(id: WidgetId) {
+    const rest = settings.widgetOrder.filter((w) => w !== id);
+    update({ widgetOrder: [...rest, id] });
+  }
 
   function renderWidget(id: WidgetId) {
     switch (id) {
@@ -68,23 +63,27 @@ export default function App() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 pb-4 pt-3 sm:px-10 lg:px-16">
           <Header onOpenSettings={() => setSettingsOpen(true)} />
           <ClockHero userName={settings.userName} />
+        </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {enabledOrderedWidgets.map((id, index) => {
-              const meta = WIDGET_REGISTRY.find((w) => w.id === id);
-              const { isDragging, isOver, ...dragProps } = getItemProps(index);
-              return (
-                <div
-                  key={id}
-                  {...dragProps}
-                  className={`cursor-grab transition-all duration-150 ease-spring-bounce active:cursor-grabbing ${meta?.gridClassName ?? ""} ${isDragging ? "scale-[0.97] opacity-40" : ""
-                    } ${isOver ? "scale-[1.01] rounded-card ring-2 ring-accent/60" : ""}`}
-                >
-                  <WidgetErrorBoundary label={meta?.label ?? "Widget"}>{renderWidget(id)}</WidgetErrorBoundary>
-                </div>
-              );
-            })}
-          </div>
+        <div className="relative mx-6 mb-6 min-h-[620px] sm:mx-10 lg:mx-16">
+          {enabledWidgets.map((id, index) => {
+            const meta = WIDGET_REGISTRY.find((w) => w.id === id);
+            const layout = settings.widgetLayout[id] ?? meta?.defaultLayout;
+            if (!meta || !layout) return null;
+            return (
+              <FreeWidget
+                key={id}
+                layout={layout}
+                minW={meta.minW}
+                minH={meta.minH}
+                zIndex={10 + index}
+                onFocus={() => bringToFront(id)}
+                onChange={(next) => updateLayout(id, next)}
+              >
+                <WidgetErrorBoundary label={meta.label}>{renderWidget(id)}</WidgetErrorBoundary>
+              </FreeWidget>
+            );
+          })}
         </div>
 
         <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} settings={settings} update={update} />

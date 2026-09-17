@@ -1,5 +1,5 @@
 import { CloudSun, Droplets, MapPin, Wind } from "lucide-react";
-import { WidgetFrame, StateView } from "@/components/common/WidgetFrame";
+import { WidgetFrame, StateView, useWidgetSize } from "@/components/common/WidgetFrame";
 import { useAsyncResource } from "@/hooks/useAsyncResource";
 import { fetchWeather } from "@/services/weatherService";
 import { iconForWeatherCode } from "@/utils/weatherIcons";
@@ -10,6 +10,79 @@ import type { UserSettings, WeatherData } from "@/types";
 interface Props {
   settings: UserSettings;
   update: (patch: Partial<UserSettings>) => void;
+}
+
+function WeatherBody({ weather, stale }: { weather: WeatherData; stale?: boolean }) {
+  const { height } = useWidgetSize();
+  const Icon = iconForWeatherCode(weather.code);
+
+  if (height < 150) {
+    return (
+      <div className={`flex h-full items-center justify-between gap-3 ${stale ? "opacity-70" : ""}`}>
+        <div className="flex items-center gap-2">
+          <Icon className="h-6 w-6 shrink-0 text-accent" strokeWidth={1.5} />
+          <span className="tabular text-2xl font-semibold leading-none text-ink">{weather.temperatureC}°</span>
+        </div>
+        <div className="truncate text-right text-xs text-ink-faint">
+          <p className="truncate">{weather.condition}</p>
+          <p className="tabular">H:{weather.tempMaxC}° L:{weather.tempMinC}°</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={stale ? "opacity-70" : ""}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Icon className="h-9 w-9 text-accent" strokeWidth={1.5} />
+          <div>
+            <span className="tabular text-4xl font-semibold leading-none tracking-display text-ink">
+              {weather.temperatureC}°
+            </span>
+            <p className="mt-1 text-xs text-ink-faint">{weather.condition}</p>
+          </div>
+        </div>
+        <div className="text-right text-xs text-ink-faint">
+          <p className="flex items-center justify-end gap-1">
+            <MapPin className="h-3 w-3" /> {weather.locationName}
+          </p>
+          <p className="mt-1 tabular">
+            H:{weather.tempMaxC}° L:{weather.tempMinC}°
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center gap-4 border-t border-surface-border pt-3 text-xs text-ink-faint">
+        <span>
+          Feels like <span className="tabular text-ink-dim">{weather.feelsLikeC}°</span>
+        </span>
+        <span className="flex items-center gap-1">
+          <Droplets className="h-3 w-3" /> {weather.humidity}%
+        </span>
+        <span className="flex items-center gap-1">
+          <Wind className="h-3 w-3" /> {weather.windKph} km/h
+        </span>
+      </div>
+
+      {weather.forecast.length > 0 && (
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {weather.forecast.map((d, i) => {
+            const DayIcon = iconForWeatherCode(d.code);
+            return (
+              <div key={i} className="flex flex-col items-center gap-1 py-1 text-center">
+                <span className="text-[11px] tracking-label text-ink-faint">{d.day}</span>
+                <DayIcon className="h-4 w-4 text-ink-dim" strokeWidth={1.5} />
+                <span className="tabular text-xs font-medium text-ink">
+                  {d.maxC}° <span className="text-ink-faint">/ {d.minC}°</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function WeatherWidget({ settings, update }: Props) {
@@ -24,63 +97,8 @@ export function WeatherWidget({ settings, update }: Props) {
 
   return (
     <WidgetFrame icon={CloudSun} title="Weather" settings={<WeatherSection settings={settings} update={update} />}>
-
       <StateView state={state} emptyLabel="Set a city or allow location access in Settings" skeletonLines={3}>
-        {(weather, stale) => {
-          const Icon = iconForWeatherCode(weather.code);
-          return (
-            <div className={stale ? "opacity-70" : ""}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Icon className="h-9 w-9 text-accent" strokeWidth={1.5} />
-                  <div>
-                    <span className="tabular text-4xl font-semibold leading-none tracking-display text-ink">
-                      {weather.temperatureC}°
-                    </span>
-                    <p className="mt-1 text-xs text-ink-faint">{weather.condition}</p>
-                  </div>
-                </div>
-                <div className="text-right text-xs text-ink-faint">
-                  <p className="flex items-center justify-end gap-1">
-                    <MapPin className="h-3 w-3" /> {weather.locationName}
-                  </p>
-                  <p className="mt-1 tabular">
-                    H:{weather.tempMaxC}° L:{weather.tempMinC}°
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-center gap-4 border-t border-surface-border pt-3 text-xs text-ink-faint">
-                <span>
-                  Feels like <span className="tabular text-ink-dim">{weather.feelsLikeC}°</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <Droplets className="h-3 w-3" /> {weather.humidity}%
-                </span>
-                <span className="flex items-center gap-1">
-                  <Wind className="h-3 w-3" /> {weather.windKph} km/h
-                </span>
-              </div>
-
-              {weather.forecast.length > 0 && (
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {weather.forecast.map((d, i) => {
-                    const DayIcon = iconForWeatherCode(d.code);
-                    return (
-                      <div key={i} className="flex flex-col items-center gap-1 py-1 text-center">
-                        <span className="text-[11px] tracking-label text-ink-faint">{d.day}</span>
-                        <DayIcon className="h-4 w-4 text-ink-dim" strokeWidth={1.5} />
-                        <span className="tabular text-xs font-medium text-ink">
-                          {d.maxC}° <span className="text-ink-faint">/ {d.minC}°</span>
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        }}
+        {(weather, stale) => <WeatherBody weather={weather} stale={stale} />}
       </StateView>
     </WidgetFrame>
   );
